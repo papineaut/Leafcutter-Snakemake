@@ -33,13 +33,13 @@ default-resources:
 
 set-resources:
   fastqc1:
-    runtime: 20
+    runtime: 40
     mem_mb: 3000
   fastqc2:
-    runtime: 20
+    runtime: 40
     mem_mb: 3000
   alignement:
-    runtime: 90
+    runtime: 120
     mem_mb: 48000
   trim_galore:
     runtime: 60
