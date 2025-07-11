@@ -1,0 +1,19 @@
+
+run_rules:
+  fastqc1: true
+  fastqc2: true
+  trim_galore: true
+  alignement: true
+  common: true
+  samtools: true
+  bam_bed: true
+  junc: true
+  cluster_file: true
+  clustering: true
+  outlier: true
+  differencial: true
+  prep_vis1: true
+  prep_vis2: true
+  rMATS: true
+  olego: false
+  regtools: true

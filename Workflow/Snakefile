@@ -1,0 +1,109 @@
+configfile: "config.yaml"
+
+def enabled(rule_name):
+    return config.get("run_rules", {}).get(rule_name, False)
+
+include: "rules/common.smk"
+if config["run_rules"].get("fastqc1"):
+    include: "rules/fastqc1.smk"
+if config["run_rules"].get("fastqc2"):
+    include: "rules/fastqc2.smk"
+if config["run_rules"].get("trim_galore"):
+    include: "rules/trim_galore.smk"
+if config["run_rules"].get("alignement"):
+    include: "rules/alignement.smk"
+if config["run_rules"].get("samtools"):
+    include: "rules/samtools.smk"
+if config["run_rules"].get("bam_bed"):
+    include: "rules/bam_bed.smk"
+if config["run_rules"].get("junc"):
+    include: "rules/junc.smk"
+if config["run_rules"].get("cluster_file"):
+    include: "rules/cluster_file.smk"
+if config["run_rules"].get("clustering"):
+    include: "rules/clustering.smk"
+if config["run_rules"].get("outlier"):
+    include: "rules/outlier.smk"
+if config["run_rules"].get("differencial"):
+    include: "rules/differencial.smk"
+if config["run_rules"].get("prep_vis1"):
+    include: "rules/prep_vis1.smk"
+if config["run_rules"].get("prep_vis2"):
+    include: "rules/prep_vis2.smk"
+if config["run_rules"].get("rMATS"):
+    include: "rules/rMATS.smk"
+if config["run_rules"].get("olego"):
+    include: "rules/oLEGO.smk"
+if config["run_rules"].get("regtools"):
+    include: "rules/regtools.smk"
+
+rule all:
+    input:
+        *(expand("results/{batch}/fastqc/fastqc1/{sample}_{read}_fastqc.zip",
+                 sample=SAMPLES, read=READS, batch=BATCHES)
+          if enabled("fastqc1") else []),
+
+        *(expand("results/{batch}/fastqc/fastqc2/{un_ou_deux}_fastqc.zip",
+                 un_ou_deux=UN_OU_DEUX, batch=BATCHES)
+          if enabled("fastqc2") else []),
+
+        *(expand("results/{batch}/trimgalore/{un_ou_deux}.fq",
+                 un_ou_deux=UN_OU_DEUX, batch=BATCHES)
+          if enabled("trim_galore") else []),
+
+        *(expand("results/star_align/{sample}Aligned.sortedByCoord.out.bam",
+                 sample=SAMPLES, batch=BATCHES)
+          if enabled("alignement") else []),
+
+        *(expand("results/star_align/{sample}Aligned.sortedByCoord.out.bam.bai", sample=SAMPLES, batch=BATCHES)
+          if enabled("samtools") else []),
+
+        *(expand("results/sam_idxstats/{sample}.tsv", sample=SAMPLES, batch=BATCHES)
+          if enabled("samtools") else []),
+
+        *(expand("results/sam_flagstat/{sample}.tsv", sample=SAMPLES, batch=BATCHES)
+          if enabled("samtools") else []),
+
+        *(expand("results/sam_stats/{sample}.txt", sample=SAMPLES, batch=BATCHES)
+          if enabled("samtools") else []),
+
+        *(expand("leafcutter_outlier_pVals.txt",
+                 sample=SAMPLES, batch=BATCHES)
+          if enabled("outlier") else []),    
+
+        *(expand("results/bam_bed/{sample}Aligned.sortedByCoord.out.bed",
+                 sample=SAMPLES, batch=BATCHES)
+          if enabled("bam_bed") else []),
+
+        *(expand("leafcutter_ds_cluster_significance.txt",
+                 sample=SAMPLES, batch=BATCHES)
+          if enabled("differencial") else []),
+
+        *(expand("results/junctions/{sample}_off.junc", sample=SAMPLES, batch=BATCHES)
+          if enabled("junc") else []),
+
+        *(expand("results/combined/{sample}_sens.fq", sample=SAMPLES)
+          if enabled("olego") else []),
+
+        *(["data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa.rsa"]
+          if enabled("olego") else []),
+
+        *(expand("results/olego_align/{sample}_sens.map", sample=SAMPLES)
+          if enabled("olego") else []),
+
+        *(expand("results/olego_align/{sample}reverse.map", sample=SAMPLES)
+          if enabled("olego") else []),
+
+        *(expand("results/reg_junc/{sample}_off.junc", sample=SAMPLES)
+          if enabled("regtools") else []),
+
+        *(expand( "data/startingfiles/b1.txt",sample=SAMPLES)
+          if enabled("rMATS") else []),
+          
+        *(expand( "results/rmats/prep/validation/complete.txt",sample=SAMPLES)
+          if enabled("rMATS") else []),
+        *(expand( "results/rmats/post/res.txt",sample=SAMPLES)
+          if enabled("rMATS") else []),
+
+
+          

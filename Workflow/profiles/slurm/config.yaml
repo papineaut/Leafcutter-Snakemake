@@ -1,0 +1,123 @@
+executor: cluster-generic
+cluster-generic-submit-cmd:
+  mkdir -p logs/slurm/{rule} &&
+  sbatch
+    --account=def-kchoquet
+    --mail-user=thomas.papineau-valex@usherbrooke.ca
+    --mail-type=FAIL
+    --job-name={rule}-{wildcards}
+    --mem={resources.mem_mb}
+    --time={resources.runtime}
+    --cpus-per-task={threads}
+    --output=logs/slurm/{rule}/%j-{wildcards}.log
+    --parsable
+
+use-singularity: true
+
+config:
+  images:
+    leafcutter: docker://skchronicles/leafcutter
+
+jobs: 999 
+cluster-generic-cancel-cmd: scancel
+software-deployment-method: conda
+rerun-triggers: mtime
+keep-going: True
+printshellcmds: False
+show-failed-logs: True
+verbose: False
+
+default-resources:
+  mem_mb: 1000
+  runtime: 15
+
+set-resources:
+  fastqc1:
+    runtime: 20
+    mem_mb: 3000
+  fastqc2:
+    runtime: 20
+    mem_mb: 3000
+  alignement:
+    runtime: 90
+    mem_mb: 48000
+  trim_galore:
+    runtime: 60
+    mem_mb: 48000
+  sam_idx:
+    runtime: 30
+    mem_mb: 4000
+  sam_stats:
+    runtime: 45
+    mem_mb: 4000
+  sam_flagstat:
+    runtime: 30
+    mem_mb: 4000
+  sam_idxstats:
+    runtime: 30
+    mem_mb: 4000
+  bam_bed:
+    runtime: 45
+    mem_mb: 4000
+  junc:
+    runtime: 15
+    mem_mb: 4000
+  cluster_file:
+    runtime: 5
+    mem_mb: 4000
+  clustering:
+    runtime: 30
+    mem_mb: 4000
+  outlier:
+    runtime: 60
+    mem_mb: 48000
+  differencial:
+    runtime: 20
+    mem_mb: 10000
+  prep_vis1:
+    runtime: 15
+    mem_mb: 4800
+  prep_vis2:
+    runtime: 15
+    mem_mb: 4800
+  oLEGO_INDEX:
+    runtime: 90
+    mem_mb: 12000
+  regtool:
+    runtime: 500
+    mem_mb: 1000
+  oLEGO_prep:
+    runtime: 30
+    mem_mb: 4000
+  rmats_samples:
+    runtime: 5
+    mem_mb: 1000
+  rmats_prep:
+    runtime: 180
+    mem_mb: 500000
+  rmats_post:
+    runtime: 60
+    mem_mb: 50000
+
+set-threads:
+  fastqc1: 1
+  fastqc2: 1
+  alignement: 12
+  trim_galore: 8
+  sam_idx: 1
+  sam_stats: 1
+  sam_flagstat: 1
+  sam_idxstats: 1
+  bam_bed: 1
+  junc: 1
+  cluster_file: 1
+  clustering: 1
+  outlier: 8
+  differencial: 8
+  prep_vis1: 1
+  prep_vis2: 1
+  oLEGO_INDEX: 4
+  regtool: 1
+  rmats_samples: 1
+  rmats_prep: 8
+  rmats_post: 4
