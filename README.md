@@ -12,3 +12,5 @@ To launch the pipeline you need to:
     302155756_off 0 men 9.09
 
 -Download a exon files (you can find it here https://www.dropbox.com/s/osmtksukti9gv7o/gencode.v31.exons.txt.gz?dl=0 from davidaknowles repo), a GTf file for your species, an annotation file and a primary assembly and put it in data/genome/.
+
+-Copy the leafcutter repo with: git clone https://github.com/davidaknowles/leafcutter
